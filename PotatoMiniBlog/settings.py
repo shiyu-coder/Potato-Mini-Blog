@@ -11,9 +11,22 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import json
+from django.conf import settings
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# privacy_info = {}
+privacy_file = open(os.path.join(BASE_DIR, '..\\settings_info.json'))
+privacy_content = privacy_file.read()
+privacy_content = '{' + privacy_content[2:]
+privacy_info = json.loads(privacy_content)
+# with open('settings_info.json', 'r') as privacy_file:
+#     c = privacy_file.read()
+#     c = '{' + c[2:]
+#     privacy_info = json.loads(c)
 
 
 # Quick-start development settings - unsuitable for production
@@ -37,10 +50,20 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'password_reset',
+    'taggit',
+    'ckeditor',
+    'notifications',
+    'mptt',
+    'notice',
     # 文章模块
     'article',
     # 主页模块
     'home',
+    # 用户信息模块
+    'userprofile',
+    # 评论模块
+    'comment',
 ]
 
 MIDDLEWARE = [
@@ -77,12 +100,36 @@ WSGI_APPLICATION = 'PotatoMiniBlog.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': privacy_info['DATABASE_NAME'],
+        'USER': privacy_info['DATABASE_USER'],
+        'PASSWORD': privacy_info['DATABASE_PASSWORD'],
+        'HOST': privacy_info['DATABASE_HOST'],
+        'PORT': privacy_info['DATABASE_PORT'],
     }
 }
+
+# SMTP服务器，改为你的邮箱的smtp!
+EMAIL_HOST = privacy_info['EMAIL_HOST']
+# 改为你自己的邮箱名！
+EMAIL_HOST_USER = privacy_info['EMAIL_HOST_USER']
+# 你的邮箱密码
+EMAIL_HOST_PASSWORD = privacy_info['EMAIL_HOST_PASSWORD']
+# 发送邮件的端口
+EMAIL_PORT = privacy_info['EMAIL_POST']
+# 是否使用 TLS
+EMAIL_USE_TLS = privacy_info['EMAIL_USE_TLS']
+# 默认的发件人
+DEFAULT_FROM_EMAIL = privacy_info['DEFAULT_FROM_EMAIL']
 
 
 # Password validation
@@ -109,7 +156,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
@@ -128,5 +175,36 @@ STATICFILES_DIRS = (
 )
 
 MEDIA_URL = '/media/'
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+CKEDITOR_CONFIGS = {
+    # django-ckeditor默认使用default配置
+    'default': {
+        # 编辑器宽度自适应
+        'width':'auto',
+        'height':'250px',
+        # tab键转换空格数
+        'tabSpaces': 4,
+        # 工具栏风格
+        'toolbar': 'Custom',
+        # 工具栏按钮
+        'toolbar_Custom': [
+            # 表情 代码块
+            ['Smiley', 'CodeSnippet'],
+            # 字体风格
+            ['Bold', 'Italic', 'Underline', 'RemoveFormat', 'Blockquote'],
+            # 字体颜色
+            ['TextColor', 'BGColor'],
+            # 链接
+            ['Link', 'Unlink'],
+            # 列表
+            ['NumberedList', 'BulletedList'],
+            # 最大化
+            ['Maximize']
+        ],
+        # 添加 Prism 相关插件
+        'extraPlugins': ','.join(['codesnippet', 'prism', 'widget', 'lineutils']),
+    }
+}
 

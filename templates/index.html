@@ -8,12 +8,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="all,follow">
     {% load staticfiles %}
+    {% load filters_and_tags %}
+        {% load notifications_tags %}
+    {% notifications_unread as unread_count %}
     <!-- Bootstrap CSS-->
     <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
     <!-- Font Awesome CSS-->
     <link rel="stylesheet" href="{% static 'font-awesome/css/font-awesome.min.css' %}">
     <!-- Custom icon font-->
-    <link rel="stylesheet" href="{% static 'css/fontastic.css' %}">
+    {% comment %} <link rel="stylesheet" href="{% static 'css/fontastic.css' %}"> {% endcomment %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <!-- Google fonts - Open Sans-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
     <!-- Fancybox-->
@@ -34,10 +38,10 @@
       <nav class="navbar navbar-expand-lg">
         <div class="search-area">
           <div class="search-area-inner d-flex align-items-center justify-content-center">
-            <div class="close-btn"><i class="icon-close"></i></div>
+            <div class="close-btn"><i class="icon-arrow-circle-right"></i></div>
             <div class="row d-flex justify-content-center">
               <div class="col-md-8">
-                <form action="#">
+                <form action="{% url 'article:article_list' %}?order=total_views&search={{search}}&column={{ column }}&tag={{ tag }}">
                   <div class="form-group">
                     <input type="search" name="search" id="search" placeholder="What are you looking for?">
                     <button type="submit" class="submit"><i class="icon-search-1"></i></button>
@@ -61,13 +65,51 @@
               </li>
               <li class="nav-item"><a href="{% url 'article:article_list'%}" class="nav-link ">Blog</a>
               </li>
-              <li class="nav-item"><a href="post.html" class="nav-link ">Article</a>
+              {% comment %} <li class="nav-item"><a href="post.html" class="nav-link ">Article</a>
+              </li> {% endcomment %}
+              {% comment %} <li class="nav-item"><a href="#" class="nav-link ">Contact</a>
+              </li> {% endcomment %}
+              {% if user.is_authenticated %}
+              <!-- 如果用户已经登录，则显示用户名下拉框 -->
+              <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <!-- 新增代码，小红点 -->
+                      {% if unread_count %}
+                          <svg viewBox="0 0 8 8"
+                              width="8px"
+                              height="8px">
+                              <circle cx="4"
+                                      cy="4"
+                                      r="4"
+                                      fill="#ff6b6b"
+                                      ></circle>
+                          </svg>
+                      {% endif %}
+                    {{ user.username }}
+                  </a>
+                  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                      <!-- 新增代码，通知计数 -->
+                      <a class="dropdown-item" href="{% url "notice:list" %}">Notice
+                          {% if unread_count %}
+                          <span class="badge badge-danger">{{ unread_count }}</span>
+                          {% endif %}
+                      </a>
+                    <a class="dropdown-item" href='{% url "userprofile:edit" user.id %}'>Profile</a>
+                    <a class="dropdown-item" href="#" onclick="user_delete()">Delete user</a>
+                    <a class="dropdown-item" href="{% url "userprofile:logout" %}">Log out</a>
+                  </div>
               </li>
-              <li class="nav-item"><a href="#" class="nav-link ">Contact</a>
-              </li>
+              <!-- 如果用户未登录，则显示 “登录” -->
+              {% else %}
+                  <li class="nav-item">
+                      <a class="nav-link" href="{% url 'userprofile:login' %}">Log in</a>
+                      {% comment %} <a class="nav-link" href="{% url 'account_login' %}">登录</a> {% endcomment %}
+                  </li>
+              <!-- if 语句在这里结束 -->
+              {% endif %}
             </ul>
-            <div class="navbar-text"><a href="#" class="search-btn"><i class="icon-search-1"></i></a></div>
-            <ul class="langs navbar-text"><a href="#" class="active">EN</a><span>           </span><a href="#">ES</a></ul>
+            <div class="navbar-text"><a href="#" class="search-btn"><i class="icon-search"></i></a></div>
+            <ul class="langs navbar-text"><a href="#" class="active">EN</a><span>           </span><a href="#">ZH</a></ul>
           </div>
         </div>
       </nav>
@@ -96,69 +138,30 @@
     <section class="featured-posts no-padding-top">
       <div class="container">
         <!-- Post-->
+        {% for article in articles_view %}
+        {% with aid=article.author.id%}
         <div class="row d-flex align-items-stretch">
           <div class="text col-lg-7">
             <div class="text-inner d-flex align-items-center">
               <div class="content">
                 <header class="post-header">
-                  <div class="category"><a href="#">Business</a><a href="#">Technology</a></div><a href="post.html">
-                    <h2 class="h4">Alberto Savoia Can Teach You About Interior</h2></a>
+                  <div class="category"><a href="{% url 'article:article_list' %}?order=total_views&column={{ article.column }}">{{ article.column }}</a></div><a href="{% url 'article:article_detail' article.id %}">
+                    <h2 class="h4">{{ article.title }}</h2></a>
                 </header>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrude consectetur adipisicing elit, sed do eiusmod tempor incididunt.</p>
-                <footer class="post-footer d-flex align-items-center"><a href="#" class="author d-flex align-items-center flex-wrap">
-                    <div class="avatar"><img src="{% static 'img/avatar-1.jpg' %}" alt="..." class="img-fluid"></div>
-                    <div class="title"><span>John Doe</span></div></a>
-                  <div class="date"><i class="icon-clock"></i> 2 months ago</div>
-                  <div class="comments"><i class="icon-comment"></i>12</div>
+                <p>{{ article.brief }}</p>
+                <footer class="post-footer d-flex align-items-center">
+                    <div class="avatar"><img src="{% for profile in profiles_view %}{% if profile.user_id == aid %}{{profile.avatar.url}}{% endif %}{% endfor %}" alt="..." class="img-fluid"></div>
+                    <div class="title"><span>{{ article.author }}</span></div>
+                  <div class="date"><i class="icon-clock-o"></i>{{ article.created|timesince_zh }}</div>
+                  <div class="comments"><i class="icon-eye"></i>{{ article.total_views }}</div>
                 </footer>
               </div>
             </div>
           </div>
-          <div class="image col-lg-5"><img src="{% static 'img/featured-pic-1.jpeg' %}" alt="..."></div>
+          <div class="image col-lg-5"><img src="{{ article.avatar.url }}" alt="..."></div>
         </div>
-        <!-- Post        -->
-        <div class="row d-flex align-items-stretch">
-          <div class="image col-lg-5"><img src="{% static 'img/featured-pic-2.jpeg' %}" alt="..."></div>
-          <div class="text col-lg-7">
-            <div class="text-inner d-flex align-items-center">
-              <div class="content">
-                <header class="post-header">
-                  <div class="category"><a href="#">Business</a><a href="#">Technology</a></div><a href="post.html">
-                    <h2 class="h4">Alberto Savoia Can Teach You About Interior</h2></a>
-                </header>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrude consectetur adipisicing elit, sed do eiusmod tempor incididunt.</p>
-                <footer class="post-footer d-flex align-items-center"><a href="#" class="author d-flex align-items-center flex-wrap">
-                    <div class="avatar"><img src="{% static 'img/avatar-2.jpg' %}" alt="..." class="img-fluid"></div>
-                    <div class="title"><span>John Doe</span></div></a>
-                  <div class="date"><i class="icon-clock"></i> 2 months ago</div>
-                  <div class="comments"><i class="icon-comment"></i>12</div>
-                </footer>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Post                            -->
-        <div class="row d-flex align-items-stretch">
-          <div class="text col-lg-7">
-            <div class="text-inner d-flex align-items-center">
-              <div class="content">
-                <header class="post-header">
-                  <div class="category"><a href="#">Business</a><a href="#">Technology</a></div><a href="post.html">
-                    <h2 class="h4">Alberto Savoia Can Teach You About Interior</h2></a>
-                </header>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrude consectetur adipisicing elit, sed do eiusmod tempor incididunt.</p>
-                <footer class="post-footer d-flex align-items-center"><a href="#" class="author d-flex align-items-center flex-wrap">
-                    <div class="avatar"><img src="{% static 'img/avatar-3.jpg' %}" alt="..." class="img-fluid"></div>
-                    <div class="title"><span>John Doe</span></div></a>
-                  <div class="date"><i class="icon-clock"></i> 2 months ago</div>
-                  <div class="comments"><i class="icon-comment"></i>12</div>
-                </footer>
-              </div>
-            </div>
-          </div>
-          <div class="image col-lg-5"><img src="{% static 'img/featured-pic-3.jpeg' %}" alt="..."></div>
-        </div>
-      </div>
+        {% endwith %}
+        {% endfor %}
     </section>
     <!-- Divider Section-->
     <section style="background: url({% static 'img/divider-bg_2.jpg' %}); background-size: cover; background-position: center bottom" class="divider">
@@ -175,42 +178,24 @@
       <div class="container">
         <header> 
           <h2>Latest from the blog</h2>
-          <p class="text-big">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+          <p class="text-big">Here's everything that's been published recently.</p>
         </header>
         <div class="row">
+        {% for article in articles %}
           <div class="post col-md-4">
-            <div class="post-thumbnail"><a href="post.html"><img src="{% static 'img/blog-1.jpg' %}" alt="..." class="img-fluid"></a></div>
+          {% if article.avatar %}
+            <div class="post-thumbnail"><a href="{% url 'article:article_detail' article.id %}"><img src="{{ article.avatar.url }}" alt="..." class="img-fluid"></a></div>
+          {% endif %}
             <div class="post-details">
               <div class="post-meta d-flex justify-content-between">
-                <div class="date">20 May | 2020</div>
-                <div class="category"><a href="#">Business</a></div>
-              </div><a href="post.html">
-                <h3 class="h4">Ways to remember your important ideas</h3></a>
-              <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore.</p>
+                <div class="date">{{ article.created|date:'m d | Y' }}</div>
+                <div class="category"><a href="{% url 'article:article_list' %}?order=total_views&column={{ article.column }}">{{article.column}}</a></div>
+              </div><a href="{% url 'article:article_detail' article.id %}">
+                <h3 class="h4">{{article.title}}</h3></a>
+              <p class="text-muted">{{article.brief}}</p>
             </div>
           </div>
-          <div class="post col-md-4">
-            <div class="post-thumbnail"><a href="post.html"><img src="{% static 'img/blog-2.jpg' %}" alt="..." class="img-fluid"></a></div>
-            <div class="post-details">
-              <div class="post-meta d-flex justify-content-between">
-                <div class="date">20 May | 2020</div>
-                <div class="category"><a href="#">Technology</a></div>
-              </div><a href="post.html">
-                <h3 class="h4">Diversity in Engineering: Effect on Questions</h3></a>
-              <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore.</p>
-            </div>
-          </div>
-          <div class="post col-md-4">
-            <div class="post-thumbnail"><a href="post.html"><img src="{% static 'img/blog-3.jpg' %}" alt="..." class="img-fluid"></a></div>
-            <div class="post-details">
-              <div class="post-meta d-flex justify-content-between">
-                <div class="date">20 May | 2020</div>
-                <div class="category"><a href="#">Financial</a></div>
-              </div><a href="post.html">
-                <h3 class="h4">Alberto Savoia Can Teach You About Interior</h3></a>
-              <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore.</p>
-            </div>
-          </div>
+        {% endfor %}
         </div>
       </div>
     </section>
@@ -218,15 +203,21 @@
     <section class="newsletter no-padding-top">    
       <div class="container">
         <div class="row">
-          <div class="col-md-6">
-            <h2>Subscribe to Newsletter</h2>
-            <p class="text-big">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+          <div class="col-md-8">
+            <h2>Register as a new subscriber</h2>
+            <p class="text-big">Finish the form below to register as a member of potato Mini blog and start your blog journey immediately. We are looking forward to your arrival. Senior users have more opportunities to participate in the subsequent community development and maintenance plan.</p>
           </div>
           <div class="col-md-8">
             <div class="form-holder">
-              <form action="#">
+              <form method="post" action="{% url 'userprofile:register' %}">
+              {% csrf_token %}
                 <div class="form-group">
-                  <input type="email" name="email" id="email" placeholder="Type your email address">
+                  <input  type="username" name="username" id="username" placeholder="Type your username" required>
+                  <input type="email" name="email" id="email" placeholder="Type your email address" required>
+                  <input type="password" name="password" id="password" placeholder="Type your password" required>
+                  <input type="password" name="password2" id="password2" placeholder="Confirm your password" required>
+                  {% comment %} <input type="bio" name="bio" id="bio" placeholder="Type your brief introduction"> {% endcomment %}
+                  {% comment %} <input type="phone" name="phone" id="phone" placeholder="Type your phone number"> {% endcomment %}
                   <button type="submit" class="submit">Subscribe</button>
                 </div>
               </form>
@@ -262,12 +253,12 @@
         <div class="row">
           <div class="col-md-4">
             <div class="logo">
-              <h6 class="text-white">Bootstrap Blog</h6>
+              <h6 class="text-white">Potato Mini Blog</h6>
             </div>
             <div class="contact-details">
-              <p>53 Broadway, Broklyn, NY 11249</p>
-              <p>Phone: (020) 123 456 789</p>
-              <p>Email: <a href="mailto:info@company.com">Info@Company.com</a></p>
+              <p>Building 5, Xianlin Campus, Nanjing University</p>
+              <p>Phone: (010) 123 456 789</p>
+              <p>Email: <a href="mailto:info@company.com">NanjingUniversity@school.com</a></p>
               <ul class="social-menu">
                 <li class="list-inline-item"><a href="#"><i class="fa fa-facebook"></i></a></li>
                 <li class="list-inline-item"><a href="#"><i class="fa fa-twitter"></i></a></li>
@@ -294,19 +285,15 @@
             </div>
           </div>
           <div class="col-md-4">
-            <div class="latest-posts"><a href="#">
+            <div class="latest-posts">
+            {% for article in articles %}
+                <a href="{% url 'article:article_detail' article.id %}">
                 <div class="post d-flex align-items-center">
-                  <div class="image"><img src="{% static 'img/small-thumbnail-1.jpg' %}" alt="..." class="img-fluid"></div>
-                  <div class="title"><strong>Hotels for all budgets</strong><span class="date last-meta">October 26, 2020</span></div>
-                </div></a><a href="#">
-                <div class="post d-flex align-items-center">
-                  <div class="image"><img src="{% static 'img/small-thumbnail-2.jpg' %}" alt="..." class="img-fluid"></div>
-                  <div class="title"><strong>Great street atrs in London</strong><span class="date last-meta">October 26, 2020</span></div>
-                </div></a><a href="#">
-                <div class="post d-flex align-items-center">
-                  <div class="image"><img src="{% static 'img/small-thumbnail-3.jpg' %}" alt="..." class="img-fluid"></div>
-                  <div class="title"><strong>Best coffee shops in Sydney</strong><span class="date last-meta">October 26, 2020</span></div>
-                </div></a></div>
+                  <div class="image"><img src="{{ article.avatar.url }}" alt="..." class="img-fluid"></div>
+                  <div class="title"><strong>{{ article.title }}</strong><span class="date last-meta">{{ article.created|date:'m d | Y' }}</span></div>
+                </div></a>
+            {% endfor %}
+            </div>
           </div>
         </div>
       </div>
@@ -314,7 +301,7 @@
         <div class="container">
           <div class="row">
             <div class="col-md-6">
-              <p>Copyright &copy; 2020.Company name All rights reserved.<a target="_blank" href="http://sc.chinaz.com/moban/">&#x7F51;&#x9875;&#x6A21;&#x677F;</a></p>
+              <p>Copyright &copy; 2021 Potato Mini All rights reserved.<a target="_blank" href="http://potatomini.com"></a></p>
             </div>
             <div class="col-md-6 text-right">
               
@@ -331,5 +318,30 @@
     <script src="{% static 'jquery.cookie/jquery.cookie.js' %}"> </script>
     <script src="{% static '@fancyapps/fancybox/jquery.fancybox.min.js' %}"></script>
     <script src="{% static 'js/front.js' %}"></script>
+    <script src="{% static 'layer/layer.js' %}"></script>
+    {% if user.is_authenticated %}
+<form 
+    style="display:none;" 
+    id="user_delete"
+    action="{% url 'userprofile:delete' user.id %}" 
+    method="POST"
+>
+{% csrf_token %}
+    <button type="submit">发送</button>
+</form>
+    <script>
+        function user_delete() {
+            // 调用layer弹窗组件
+            layer.open({
+                title: "确认删除",
+                content: "确认删除用户资料吗？",
+                yes: function(index, layero) {
+                    $('form#user_delete button').click();
+                    layer.close(index);
+                },
+            })
+        }
+    </script>
+{% endif %}
   </body>
 </html>

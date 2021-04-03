@@ -8,13 +8,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="all,follow">
     {% load staticfiles %}
-    {%load filters_and_tags %}
+    {% load filters_and_tags %}
+    {% load notifications_tags %}
+    {% notifications_unread as unread_count %}
     <!-- Bootstrap CSS-->
     <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
     <!-- Font Awesome CSS-->
     <link rel="stylesheet" href="{% static 'font-awesome/css/font-awesome.min.css' %}">
     <!-- Custom icon font-->
-    <link rel="stylesheet" href="{% static 'css/fontastic.css' %}">
+    {% comment %} <link rel="stylesheet" href="{% static 'css/fontastic.css' %}"> {% endcomment %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <!-- Google fonts - Open Sans-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
     <!-- Fancybox-->
@@ -35,10 +38,10 @@
       <nav class="navbar navbar-expand-lg">
         <div class="search-area">
           <div class="search-area-inner d-flex align-items-center justify-content-center">
-            <div class="close-btn"><i class="icon-close"></i></div>
+            <div class="close-btn"><i class="icon-arrow-circle-right"></i></div>
             <div class="row d-flex justify-content-center">
               <div class="col-md-8">
-                <form action="#">
+                <form action="{% url 'article:article_list' %}?order=total_views&search={{search}}">
                   <div class="form-group">
                     <input type="search" name="search" id="search" placeholder="What are you looking for?">
                     <button type="submit" class="submit"><i class="icon-search-1"></i></button>
@@ -64,11 +67,50 @@
               </li>
               {% comment %} <li class="nav-item"><a href="post.html" class="nav-link ">Post</a>
               </li> {% endcomment %}
-              <li class="nav-item"><a href="#" class="nav-link ">Contact</a>
+              {% comment %} <li class="nav-item"><a href="#" class="nav-link ">Contact</a>
+              </li> {% endcomment %}
+              {% if user.is_authenticated %}
+              <!-- 如果用户已经登录，则显示用户名下拉框 -->
+              <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <!-- 新增代码，小红点 -->
+                      {% if unread_count %}
+                          <svg viewBox="0 0 8 8"
+                              width="8px"
+                              height="8px">
+                              <circle cx="4"
+                                      cy="4"
+                                      r="4"
+                                      fill="#ff6b6b"
+                                      ></circle>
+                          </svg>
+                      {% endif %}
+                    {{ user.username }}
+                  </a>
+                  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                      <!-- 新增代码，通知计数 -->
+                      <a class="dropdown-item" href="{% url "notice:list" %}">Notice
+                          {% if unread_count %}
+                          <span class="badge badge-danger">{{ unread_count }}</span>
+                          {% endif %}
+                      </a>
+                    <a class="dropdown-item" href='{% url "article:article_create" %}'>Create</a>
+                    <a class="dropdown-item" href='{% url "userprofile:edit" user.id %}'>Profile</a>
+                    <a class="dropdown-item" href="#" onclick="user_delete()">Delete user</a>
+                    <a class="dropdown-item" href="{% url "userprofile:logout" %}">Log out</a>
+                  </div>
               </li>
+              <!-- 如果用户未登录，则显示 “登录” -->
+              {% else %}
+                  <li class="nav-item">
+                      <a class="nav-link" href="{% url 'userprofile:login' %}">Log in</a>
+                      {% comment %} <a class="nav-link" href="{% url 'account_login' %}">登录</a> {% endcomment %}
+                  </li>
+              <!-- if 语句在这里结束 -->
+              {% endif %}
             </ul>
-            <div class="navbar-text"><a href="#" class="search-btn"><i class="icon-search-1"></i></a></div>
-            <ul class="langs navbar-text"><a href="#" class="active">EN</a><span>           </span><a href="#">ES</a></ul>
+            <div class="navbar-text"><a href="#" class="search-btn"><i class="icon-search"></i></a></div>
+            <ul class="langs navbar-text"><a href="#" class="active">EN</a><span>           </span><a href="#">ZH</a></ul>
           </div>
         </div>
       </nav>
@@ -80,6 +122,7 @@
           <div class="container">
             <div class="row">
             {% for article in articles %}
+            {% with aid=article.author.id%}
               <!-- post -->
               <div class="post col-xl-6">
                 {% if article.avatar %}
@@ -88,29 +131,36 @@
                 <div class="post-details">
                   <div class="post-meta d-flex justify-content-between">
                     <div class="date meta-last">{{ article.created|date:'m d | Y' }}</div>
-                    <div class="category"><a href="#">{{article.column}}</a></div>
-                  </div><a href="post.html">
+                    <div class="category"><a href="{% url 'article:article_list' %}?order=total_views&column={{ article.column }}">{{article.column}}</a></div>
+                  </div><a href="{% url 'article:article_detail' article.id %}">
                     <h3 class="h4">{{article.title}}</h3></a>
                   <p class="text-muted">{{article.brief}}</p>
-                  <footer class="post-footer d-flex align-items-center"><a href="#" class="author d-flex align-items-center flex-wrap">
-                      <div class="avatar"><img src="{% static 'img/avatar-3.jpg' %}" alt="..." class="img-fluid"></div>
-                      <div class="title"><span>{{ article.author }}</span></div></a>
-                    <div class="date"><i class="icon-clock"></i> {{ article.created|timesince_zh }}</div>
-                    <div class="comments meta-last"><i class="icon-comment"></i>12</div>
+                  <footer class="post-footer d-flex align-items-center">
+                      <div class="avatar"><img src="{% for profile in profiles %}{% if profile.user_id == aid %}{{profile.avatar.url}}{% endif %}{% endfor %}" alt="..." class="img-fluid"></div>
+                      <div class="title"><span>{{ article.author }}</span></div>
+                    <div class="date"><i class="icon-clock-o"></i> {{ article.created|timesince_zh }}</div>
+                    <div class="comments"><i class="icon-eye"></i>{{ article.total_views }}</div>
+                    <div class="comments meta-last"><i class="icon-heart"></i>{{ article.likes }}</div>
                   </footer>
                 </div>
               </div>
-              
+              {% endwith %}
               {% endfor %}
               </div>
             <!-- Pagination -->
             <nav aria-label="Page navigation example">
               <ul class="pagination pagination-template d-flex justify-content-center">
-                <li class="page-item"><a href="#" class="page-link"> <i class="fa fa-angle-left"></i></a></li>
-                <li class="page-item"><a href="#" class="page-link active">1</a></li>
-                <li class="page-item"><a href="#" class="page-link">2</a></li>
-                <li class="page-item"><a href="#" class="page-link">3</a></li>
-                <li class="page-item"><a href="#" class="page-link"> <i class="fa fa-angle-right"></i></a></li>
+              {% comment %} 前页 {% endcomment %}
+              {% if articles.has_previous %}
+                <li class="page-item"><a href="?page={{ articles.previous_page_number }}" class="page-link"> <i class="fa fa-angle-left"></i></a></li>
+                <li class="page-item"><a href="?page={{ articles.previous_page_number }}" class="page-link">{{ articles.previous_page_number }}</a></li>
+              {% endif %}
+              {% comment %} 当前页面 {% endcomment %}
+                <li class="page-item"><a href="?page={{ articles.number }}" class="page-link active">{{ articles.number }}</a></li>
+              {% if articles.has_next %}
+                <li class="page-item"><a href="?page={{ articles.next_page_number }}" class="page-link">{{ articles.next_page_number }}</a></li>
+                <li class="page-item"><a href="?page={{ articles.next_page_number }}" class="page-link"> <i class="fa fa-angle-right"></i></a></li>
+              {% endif %}
               </ul>
             </nav>
           
@@ -121,7 +171,7 @@
             <header>
               <h3 class="h6">Search the blog</h3>
             </header>
-            <form action="#" class="search-form">
+            <form action="{% url 'article:article_list' %}?order=total_views&search={{search}}&column={{ column }}&tag={{ tag }}" class="search-form">
               <div class="form-group">
                 <input type="search" placeholder="What are you looking for?">
                 <button type="submit" class="submit"><i class="icon-search"></i></button>
@@ -133,45 +183,32 @@
             <header>
               <h3 class="h6">Latest Posts</h3>
             </header>
-            <div class="blog-posts"><a href="#">
+            <div class="blog-posts">
+            {% for article in latest_posts %}
+            <a href="#">
                 <div class="item d-flex align-items-center">
-                  <div class="image"><img src="{% static 'img/small-thumbnail-1.jpg' %}" alt="..." class="img-fluid"></div>
-                  <div class="title"><strong>Alberto Savoia Can Teach You About</strong>
+                {% if article.avatar %}
+                  <div class="image"><img src="{{ article.avatar.url }}" alt="..." class="img-fluid"></div>
+                {% endif %}
+                  <div class="title"><strong>{{article.title}}</strong>
                     <div class="d-flex align-items-center">
-                      <div class="views"><i class="icon-eye"></i> 500</div>
-                      <div class="comments"><i class="icon-comment"></i>12</div>
+                      <div class="views"><i class="icon-eye"></i>{{ article.total_views }}</div>
+                      <div class="comments"><i class="icon-heart"></i>{{ article.likes }}</div>
                     </div>
                   </div>
-                </div></a><a href="#">
-                <div class="item d-flex align-items-center">
-                  <div class="image"><img src="{% static 'img/small-thumbnail-2.jpg' %}" alt="..." class="img-fluid"></div>
-                  <div class="title"><strong>Alberto Savoia Can Teach You About</strong>
-                    <div class="d-flex align-items-center">
-                      <div class="views"><i class="icon-eye"></i> 500</div>
-                      <div class="comments"><i class="icon-comment"></i>12</div>
-                    </div>
-                  </div>
-                </div></a><a href="#">
-                <div class="item d-flex align-items-center">
-                  <div class="image"><img src="{% static 'img/small-thumbnail-3.jpg' %}" alt="..." class="img-fluid"></div>
-                  <div class="title"><strong>Alberto Savoia Can Teach You About</strong>
-                    <div class="d-flex align-items-center">
-                      <div class="views"><i class="icon-eye"></i> 500</div>
-                      <div class="comments"><i class="icon-comment"></i>12</div>
-                    </div>
-                  </div>
-                </div></a></div>
+                </div>
+              </a>
+            {% endfor %}
+          </div>
           </div>
           <!-- Widget [Categories Widget]-->
           <div class="widget categories">
             <header>
               <h3 class="h6">Categories</h3>
             </header>
-            <div class="item d-flex justify-content-between"><a href="#">Growth</a><span>12</span></div>
-            <div class="item d-flex justify-content-between"><a href="#">Local</a><span>25</span></div>
-            <div class="item d-flex justify-content-between"><a href="#">Sales</a><span>8</span></div>
-            <div class="item d-flex justify-content-between"><a href="#">Tips</a><span>17</span></div>
-            <div class="item d-flex justify-content-between"><a href="#">Local</a><span>25</span></div>
+            {% for column in columns %}
+            <div class="item d-flex justify-content-between"><a href="{% url 'article:article_list' %}?order=total_views&column={{ column.title }}">{{column.title}}</a><span>{{ column.num_articles }}</span></div>
+            {% endfor %}
           </div>
           <!-- Widget [Tags Cloud Widget]-->
           <div class="widget tags">       
@@ -179,11 +216,9 @@
               <h3 class="h6">Tags</h3>
             </header>
             <ul class="list-inline">
-              <li class="list-inline-item"><a href="#" class="tag">#Business</a></li>
-              <li class="list-inline-item"><a href="#" class="tag">#Technology</a></li>
-              <li class="list-inline-item"><a href="#" class="tag">#Fashion</a></li>
-              <li class="list-inline-item"><a href="#" class="tag">#Sports</a></li>
-              <li class="list-inline-item"><a href="#" class="tag">#Economy</a></li>
+            {% for t in tags %}
+              <li class="list-inline-item"><a href="{% url 'article:article_list' %}?order=total_views&tag={{ t }}" class="tag">#{{t}}</a></li>
+            {% endfor %}
             </ul>
           </div>
         </aside>
@@ -195,12 +230,12 @@
         <div class="row">
           <div class="col-md-4">
             <div class="logo">
-              <h6 class="text-white">Bootstrap Blog</h6>
+              <h6 class="text-white">Potato Mini Blog</h6>
             </div>
             <div class="contact-details">
-              <p>53 Broadway, Broklyn, NY 11249</p>
-              <p>Phone: (020) 123 456 789</p>
-              <p>Email: <a href="mailto:info@company.com">Info@Company.com</a></p>
+              <p>Building 5, Xianlin Campus, Nanjing University</p>
+              <p>Phone: (010) 123 456 789</p>
+              <p>Email: <a href="mailto:info@company.com">NanjingUniversity@school.com</a></p>
               <ul class="social-menu">
                 <li class="list-inline-item"><a href="#"><i class="fa fa-facebook"></i></a></li>
                 <li class="list-inline-item"><a href="#"><i class="fa fa-twitter"></i></a></li>
@@ -227,19 +262,15 @@
             </div>
           </div>
           <div class="col-md-4">
-            <div class="latest-posts"><a href="#">
+            <div class="latest-posts">
+            {% for article in articles %}
+                <a href="{% url 'article:article_detail' article.id %}">
                 <div class="post d-flex align-items-center">
-                  <div class="image"><img src="{% static 'img/small-thumbnail-1.jpg' %}" alt="..." class="img-fluid"></div>
-                  <div class="title"><strong>Hotels for all budgets</strong><span class="date last-meta">October 26, 2020</span></div>
-                </div></a><a href="#">
-                <div class="post d-flex align-items-center">
-                  <div class="image"><img src="{% static 'img/small-thumbnail-2.jpg' %}" alt="..." class="img-fluid"></div>
-                  <div class="title"><strong>Great street atrs in London</strong><span class="date last-meta">October 26, 2020</span></div>
-                </div></a><a href="#">
-                <div class="post d-flex align-items-center">
-                  <div class="image"><img src="{% static 'img/small-thumbnail-3.jpg' %}" alt="..." class="img-fluid"></div>
-                  <div class="title"><strong>Best coffee shops in Sydney</strong><span class="date last-meta">October 26, 2020</span></div>
-                </div></a></div>
+                  <div class="image"><img src="{{ article.avatar.url }}" alt="..." class="img-fluid"></div>
+                  <div class="title"><strong>{{ article.title }}</strong><span class="date last-meta">{{ article.created|date:'m d | Y' }}</span></div>
+                </div></a>
+            {% endfor %}
+            </div>
           </div>
         </div>
       </div>
@@ -265,5 +296,30 @@
     <script src="{% static 'jquery.cookie/jquery.cookie.js' %}"> </script>
     <script src="{% static '@fancyapps/fancybox/jquery.fancybox.min.js' %}"></script>
     <script src="{% static 'js/front.js' %}"></script>
+    <script src="{% static 'layer/layer.js' %}"></script>
+    {% if user.is_authenticated %}
+<form 
+    style="display:none;" 
+    id="user_delete"
+    action="{% url 'userprofile:delete' user.id %}" 
+    method="POST"
+>
+{% csrf_token %}
+    <button type="submit">发送</button>
+</form>
+    <script>
+        function user_delete() {
+            // 调用layer弹窗组件
+            layer.open({
+                title: "确认删除",
+                content: "确认删除用户资料吗？",
+                yes: function(index, layero) {
+                    $('form#user_delete button').click();
+                    layer.close(index);
+                },
+            })
+        }
+    </script>
+{% endif %}
   </body>
 </html>

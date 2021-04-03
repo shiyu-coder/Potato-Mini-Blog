@@ -1,11 +1,281 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-<head>
-<meta charset="utf-8">
-<title>create</title>
-<link href="../static/css/custom.css" rel="stylesheet" type="text/css">
-</head>
-
-<body>
-</body>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Potato Mini Blog</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="all,follow">
+    {% load staticfiles %}
+    {% load filters_and_tags %}
+    {% load notifications_tags %}
+    {% notifications_unread as unread_count %}
+    <!-- Bootstrap CSS-->
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <!-- Font Awesome CSS-->
+    <link rel="stylesheet" href="{% static 'font-awesome/css/font-awesome.min.css' %}">
+    <!-- Custom icon font-->
+    {% comment %} <link rel="stylesheet" href="{% static 'css/fontastic.css' %}"> {% endcomment %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <!-- Google fonts - Open Sans-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <!-- Fancybox-->
+    <link rel="stylesheet" href="{% static '@fancyapps/fancybox/jquery.fancybox.min.css' %}">
+    <!-- theme stylesheet-->
+    <link rel="stylesheet" href="{% static 'css/style.default.css' %}" id="theme-stylesheet">
+    <!-- Custom stylesheet - for your changes-->
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    <!-- Favicon-->
+    <link rel="shortcut icon" href="favicon.png">
+    <!-- Tweaks for older IEs--><!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
+  </head>
+  <body>
+    <header class="header">
+      <!-- Main Navbar-->
+      <nav class="navbar navbar-expand-lg">
+        <div class="search-area">
+          <div class="search-area-inner d-flex align-items-center justify-content-center">
+            <div class="close-btn"><i class="icon-arrow-circle-right"></i></div>
+            <div class="row d-flex justify-content-center">
+              <div class="col-md-8">
+                <form action="{% url 'article:article_list' %}?order=total_views&search={{search}}">
+                  <div class="form-group">
+                    <input type="search" name="search" id="search" placeholder="What are you looking for?">
+                    <button type="submit" class="submit"><i class="icon-search-1"></i></button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="container">
+          <!-- Navbar Brand -->
+          <div class="navbar-header d-flex align-items-center justify-content-between">
+            <!-- Navbar Brand --><a href="{% url 'home:home_page'%}" class="navbar-brand">Bootstrap Blog</a>
+            <!-- Toggle Button-->
+            <button type="button" data-toggle="collapse" data-target="#navbarcollapse" aria-controls="navbarcollapse" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"><span></span><span></span><span></span></button>
+          </div>
+          <!-- Navbar Menu -->
+          <div id="navbarcollapse" class="collapse navbar-collapse">
+            <ul class="navbar-nav ml-auto">
+              <li class="nav-item"><a href="{% url 'home:home_page'%}" class="nav-link ">Home</a>
+              </li>
+              <li class="nav-item"><a href="{% url 'article:article_list'%}" class="nav-link active ">Blog</a>
+              </li>
+              {% comment %} <li class="nav-item"><a href="post.html" class="nav-link ">Post</a>
+              </li> {% endcomment %}
+              {% comment %} <li class="nav-item"><a href="#" class="nav-link ">Contact</a>
+              </li> {% endcomment %}
+              {% if user.is_authenticated %}
+              <!-- 如果用户已经登录，则显示用户名下拉框 -->
+              <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <!-- 新增代码，小红点 -->
+                      {% if unread_count %}
+                          <svg viewBox="0 0 8 8"
+                              width="8px"
+                              height="8px">
+                              <circle cx="4"
+                                      cy="4"
+                                      r="4"
+                                      fill="#ff6b6b"
+                                      ></circle>
+                          </svg>
+                      {% endif %}
+                    {{ user.username }}
+                  </a>
+                  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                      <!-- 新增代码，通知计数 -->
+                      <a class="dropdown-item" href="{% url "notice:list" %}">Notice
+                          {% if unread_count %}
+                          <span class="badge badge-danger">{{ unread_count }}</span>
+                          {% endif %}
+                      </a>
+                    <a class="dropdown-item" href='{% url "article:article_create" %}'>Create</a>
+                    <a class="dropdown-item" href='{% url "userprofile:edit" user.id %}'>Profile</a>
+                    <a class="dropdown-item" href="#" onclick="user_delete()">Delete user</a>
+                    <a class="dropdown-item" href="{% url "userprofile:logout" %}">Log out</a>
+                  </div>
+              </li>
+              <!-- 如果用户未登录，则显示 “登录” -->
+              {% else %}
+                  <li class="nav-item">
+                      <a class="nav-link" href="{% url 'userprofile:login' %}">Log in</a>
+                      {% comment %} <a class="nav-link" href="{% url 'account_login' %}">登录</a> {% endcomment %}
+                  </li>
+              <!-- if 语句在这里结束 -->
+              {% endif %}
+            </ul>
+            <div class="navbar-text"><a href="#" class="search-btn"><i class="icon-search"></i></a></div>
+            <ul class="langs navbar-text"><a href="#" class="active">EN</a><span>           </span><a href="#">ZH</a></ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+<!--	Article Edit-->
+	<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <br>
+            <!-- 提交文章的表单 -->
+            <form method="post" action="." enctype="multipart/form-data">
+            {% csrf_token %}
+                <!-- Django中需要POST数据的地方都必须有csrf_token -->
+<!--                {% csrf_token %}-->
+                <!-- 文章标题 -->
+                <div class="form-group">
+                <!-- 文章标题图 -->
+    <div class="form-group">
+        <label for="avatar">标题图</label>
+        <input type="file" class="form-control-file" name="avatar" id="avatar">
+    </div>
+                    <!-- 标签 -->
+                    <label for="title">文章标题</label>
+                    <!-- 文本框 -->
+                    <input type="text" class="form-control article_post" id="title" name="title">
+                </div>
+				        <!-- 文章栏目 -->
+                <div class="form-group">
+                  <label for="column">栏目</label>
+                  <select class="form-control article_post" 
+                      id="column" 
+                      name="column"
+                  >
+                      <option value="none" article_post>请选择栏目..</option>
+                    {% for column in columns %}
+                      <option value="{{ column.id }}">{{ column }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <!-- 文章标签 -->
+                <div class="form-group">
+                  <label for="tags">标签</label>
+                  <input type="text" 
+                      class="form-control col-4 article_post" 
+                      id="tags" 
+                      name="tags"
+                  >
+                </div>
+        <!--				文章简介-->
+                <div class="form-group">
+                <label for="brief">简介</label>
+                  <textarea type="text" class="article_post form-control" id="brief" name="brief" rows="3"></textarea>
+                </div>
+                        <!-- 文章正文 -->
+                        <div class="form-group">
+                            <label for="body">文章正文</label>
+                            <!-- 文本区域 -->
+                            <textarea type="text" class="article_post form-control" id="body" name="body" rows="12"></textarea>
+                        </div>
+                        <!-- 提交按钮 -->
+                  <button class="submit_button"  type="submit">
+                    <span>提交</span>
+                  </button>
+            </form>
+        </div>
+    </div>
+</div>
+	
+	
+    <!-- Page Footer-->
+    <footer class="main-footer">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="logo">
+              <h6 class="text-white">Potato Mini Blog</h6>
+            </div>
+            <div class="contact-details">
+              <p>Building 5, Xianlin Campus, Nanjing University</p>
+              <p>Phone: (010) 123 456 789</p>
+              <p>Email: <a href="mailto:info@company.com">NanjingUniversity@school.com</a></p>
+              <ul class="social-menu">
+                <li class="list-inline-item"><a href="#"><i class="fa fa-facebook"></i></a></li>
+                <li class="list-inline-item"><a href="#"><i class="fa fa-twitter"></i></a></li>
+                <li class="list-inline-item"><a href="#"><i class="fa fa-instagram"></i></a></li>
+                <li class="list-inline-item"><a href="#"><i class="fa fa-behance"></i></a></li>
+                <li class="list-inline-item"><a href="#"><i class="fa fa-pinterest"></i></a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="menus d-flex">
+              <ul class="list-unstyled">
+                <li> <a href="#">My Account</a></li>
+                <li> <a href="#">Add Listing</a></li>
+                <li> <a href="#">Pricing</a></li>
+                <li> <a href="#">Privacy &amp; Policy</a></li>
+              </ul>
+              <ul class="list-unstyled">
+                <li> <a href="#">Our Partners</a></li>
+                <li> <a href="#">FAQ</a></li>
+                <li> <a href="#">How It Works</a></li>
+                <li> <a href="#">Contact</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="latest-posts">
+            {% for article in articles %}
+                <a href="{% url 'article:article_detail' article.id %}">
+                <div class="post d-flex align-items-center">
+                  <div class="image"><img src="{{ article.avatar.url }}" alt="..." class="img-fluid"></div>
+                  <div class="title"><strong>{{ article.title }}</strong><span class="date last-meta">{{ article.created|date:'m d | Y' }}</span></div>
+                </div></a>
+            {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="copyrights">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-6">
+              <p>Copyright &copy; 2020.Company name All rights reserved.<a target="_blank" href="http://sc.chinaz.com/moban/">&#x7F51;&#x9875;&#x6A21;&#x677F;</a></p>
+            </div>
+            <div class="col-md-6 text-right">
+              
+                
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <!-- JavaScript files-->
+    <script src="{% static 'jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'popper.js/umd/popper.min.js' %}"> </script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'jquery.cookie/jquery.cookie.js' %}"> </script>
+    <script src="{% static '@fancyapps/fancybox/jquery.fancybox.min.js' %}"></script>
+    <script src="{% static 'js/front.js' %}"></script>
+    <script src="{% static 'layer/layer.js' %}"></script>
+    {% if user.is_authenticated %}
+<form 
+    style="display:none;" 
+    id="user_delete"
+    action="{% url 'userprofile:delete' user.id %}" 
+    method="POST"
+>
+{% csrf_token %}
+    <button type="submit">发送</button>
+</form>
+    <script>
+        function user_delete() {
+            // 调用layer弹窗组件
+            layer.open({
+                title: "确认删除",
+                content: "确认删除用户资料吗？",
+                yes: function(index, layero) {
+                    $('form#user_delete button').click();
+                    layer.close(index);
+                },
+            })
+        }
+    </script>
+{% endif %}
+  </body>
 </html>
