@@ -4,6 +4,7 @@ from django.utils import timezone
 from PIL import Image
 from django.urls import reverse
 from taggit.managers import TaggableManager
+from mdeditor.fields import MDTextField
 
 
 # Create your models here.
@@ -28,7 +29,8 @@ class ArticlePost(models.Model):
     # 文章标题
     title = models.CharField(max_length=100)
     # 文章正文
-    body = models.TextField()
+    # body = models.TextField()
+    body = MDTextField()
     # 文章简介
     brief = models.CharField(max_length=200)
     # 文章创建时间

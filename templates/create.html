@@ -127,49 +127,56 @@
 <!--                {% csrf_token %}-->
                 <!-- 文章标题 -->
                 <div class="form-group">
-                <!-- 文章标题图 -->
-    <div class="form-group">
-        <label for="avatar">标题图</label>
-        <input type="file" class="form-control-file" name="avatar" id="avatar">
-    </div>
-                    <!-- 标签 -->
-                    <label for="title">文章标题</label>
-                    <!-- 文本框 -->
-                    <input type="text" class="form-control article_post" id="title" name="title">
+<!--                &lt;!&ndash; 文章标题图 &ndash;&gt;-->
+<!--    <div class="form-group">-->
+<!--        <label for="avatar">Cover</label>-->
+<!--        <input type="file" class="form-control-file" name="avatar" id="avatar">-->
+<!--    </div>-->
+<!--                    &lt;!&ndash; 标签 &ndash;&gt;-->
+<!--                    <label for="title">文章标题</label>-->
+<!--                    &lt;!&ndash; 文本框 &ndash;&gt;-->
+<!--                    <input type="text" class="form-control article_post" id="title" name="title">-->
                 </div>
-				        <!-- 文章栏目 -->
+
+<!--                &lt;!&ndash; 文章标签 &ndash;&gt;-->
+<!--                <div class="form-group">-->
+<!--                  <label for="tags">标签</label>-->
+<!--                  <input type="text" -->
+<!--                      class="form-control col-4 article_post" -->
+<!--                      id="tags" -->
+<!--                      name="tags"-->
+<!--                  >-->
+<!--                </div>-->
+
+                        <!-- 文章正文 -->
+                        <div class="form-group">
+<!--                            <label for="body">文章正文</label>-->
+                            <!-- 文本区域 -->
+
+
+<!--                            <textarea type="text" class="article_post form-control" id="body" name="body" rows="12"></textarea>-->
+                            {{ article_post_form.media }}
+                            {{ article_post_form.as_p }}</div>
+                            <!--				文章简介-->
                 <div class="form-group">
-                  <label for="column">栏目</label>
-                  <select class="form-control article_post" 
-                      id="column" 
+                <label for="brief">Brief</label>
+                  <textarea type="text" class="article_post form-control" id="brief" name="brief" rows="3"></textarea>
+                </div>
+                                    <!-- 文章栏目 -->
+                <div class="form-group">
+                  <label for="column">Category</label>
+                  <select class="form-control article_post"
+                      id="column"
                       name="column"
                   >
-                      <option value="none" article_post>请选择栏目..</option>
+                      <option value="none" article_post>Choose Category...</option>
                     {% for column in columns %}
                       <option value="{{ column.id }}">{{ column }}</option>
                     {% endfor %}
                   </select>
                 </div>
-                <!-- 文章标签 -->
-                <div class="form-group">
-                  <label for="tags">标签</label>
-                  <input type="text" 
-                      class="form-control col-4 article_post" 
-                      id="tags" 
-                      name="tags"
-                  >
-                </div>
-        <!--				文章简介-->
-                <div class="form-group">
-                <label for="brief">简介</label>
-                  <textarea type="text" class="article_post form-control" id="brief" name="brief" rows="3"></textarea>
-                </div>
-                        <!-- 文章正文 -->
-                        <div class="form-group">
-                            <label for="body">文章正文</label>
-                            <!-- 文本区域 -->
-                            <textarea type="text" class="article_post form-control" id="body" name="body" rows="12"></textarea>
-                        </div>
+
+
                         <!-- 提交按钮 -->
                   <button class="submit_button"  type="submit">
                     <span>提交</span>

@@ -28,6 +28,7 @@ urlpatterns = [
     path('inbox/notifications', include(notifications.urls, namespace='notifications')),
     path('home/', include('home.urls', namespace='home')),
     path('notice/', include('notice.urls', namespace='notice')),
+    path('mdeditor/', include('mdeditor.urls')),
     path('', include('home.urls', namespace='home')),
 ]
 

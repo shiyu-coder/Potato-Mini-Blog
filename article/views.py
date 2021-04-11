@@ -1,9 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
+from django.urls import reverse
+
+from . import forms
 from .models import ArticlePost
 import markdown
 from django.contrib.auth.decorators import login_required
-from django.views import View
+from django.views import View, generic
 from .forms import ArticlePostForm
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -59,7 +62,7 @@ def article_list(request):
     if order == 'total_views':
         article_list = article_list.order_by('-total_views')
 
-    paginator = Paginator(article_list, 4)
+    paginator = Paginator(article_list, 6)
     page = request.GET.get('page')
     articles = paginator.get_page(page)
     # print(len(article_list), len(articles))
@@ -92,6 +95,7 @@ def article_list(request):
 def article_detail(request, id):
     # 取出相应的文章
     article = get_object_or_404(ArticlePost, id=id)
+    pro = Profile.objects.get(user_id=article.author.id)
     # 取出文章评论
     comments = Comment.objects.filter(article=id)
     # 初始化查询集
@@ -160,6 +164,7 @@ def article_detail(request, id):
     # 需要传递给模板的对象
     context = {
         'article': article,
+        'pro': pro,
         'toc': md.toc,
         'comments': comments,
         'comment_form': comment_form,
@@ -207,6 +212,14 @@ def article_create(request):
         context = {'article_post_form': article_post_form, 'columns': columns}
         # 返回模板
         return render(request, 'create.html', context)
+
+
+# class MDEditorModleForm(generic.CreateView):
+#     form_class = forms.MDEditorModleForm
+#     template_name = 'create.html'
+#
+#     def get_success_url(self):
+#         return reverse('article:edit')
 
 
 # 删文章

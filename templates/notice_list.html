@@ -103,7 +103,7 @@
               {% else %}
                   <li class="nav-item">
                       <a class="nav-link" href="{% url 'userprofile:login' %}">Log in</a>
-                      {% comment %} <a class="nav-link" href="{% url 'account_login' %}">登录</a> {% endcomment %}
+                      {% comment %} <a class="nav-link" href="{% url 'account_login' %}">Log in</a> {% endcomment %}
                   </li>
               <!-- if 语句在这里结束 -->
               {% endif %}
@@ -129,7 +129,7 @@
                     <span style="color: #5897fb;">
                         {{ notice.actor }}
                     </span>
-                        在 <span style="color: #01a252;">{{ notice.target }}</span> {{ notice.verb }}。
+                        in <span style="color: #01a252;">{{ notice.target }}</span> {{ notice.verb }}。
                     </a>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ notice.timestamp|date:"Y/m/d H:i" }}
                 </li>

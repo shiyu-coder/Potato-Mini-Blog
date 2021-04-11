@@ -31,6 +31,13 @@
     <!-- Tweaks for older IEs--><!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
+    <style>
+      .breadcrumb > li + li:before {
+      color: #FFFFFF;
+      content: "/ ";
+      padding: 0 5px;
+  }
+    </style>
   </head>
   <body>
     <header class="header">
@@ -115,10 +122,33 @@
         </div>
       </nav>
     </header>
-    <div class="container">
+    <div class="container" style="background-color: white">
+
+      <nav aria-label="breadcrumb" style="background-color: white">
+        <ol class="breadcrumb" style="background-color: white">
+            <li class="breadcrumb-item">
+                {% if order != 'total_views' %}
+                    <span stye="color: gray">最新</span>
+                {% else %}
+                <a href="{% url 'article:article_list' %}?order=created&search={{search}}&column={{ column }}&tag={{ tag }}">
+                    最新
+                </a>
+                {% endif %}
+            </li>
+            <li class="breadcrumb-item">
+                {% if order == 'total_views' %}
+                    <span stye="color: gray">最热</span>
+                {% else %}
+                <a href="{% url 'article:article_list' %}?order=total_views&search={{search}}&column={{ column }}&tag={{ tag }}">
+                    最热
+                </a>
+                {% endif %}
+            </li>
+        </ol>
+    </nav>
       <div class="row">
         <!-- Latest Posts -->
-        <main class="posts-listing col-lg-8"> 
+        <main class="posts-listing col-lg-8" style="padding-top: 0px">
           <div class="container">
             <div class="row">
             {% for article in articles %}

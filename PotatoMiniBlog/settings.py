@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'userprofile',
     # 评论模块
     'comment',
+    'mdeditor',
 ]
 
 MIDDLEWARE = [

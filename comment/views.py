@@ -52,7 +52,7 @@ def post_comment(request, article_id, parent_comment_id=None):
                     request.user,
                     # recipient=User.objects.filter(is_superuser=1),
                     recipient=article.author,
-                    verb='回复了你',
+                    verb='replied you',
                     target=article,
                     action_object=new_comment,
                 )
