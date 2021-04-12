@@ -16,7 +16,7 @@
     <!-- Font Awesome CSS-->
     <link rel="stylesheet" href="{% static 'font-awesome/css/font-awesome.min.css' %}">
     <!-- Custom icon font-->
-    {% comment %} <link rel="stylesheet" href="{% static 'css/fontastic.css' %}"> {% endcomment %}
+    <link rel="stylesheet" href="{% static 'css/fontastic.css' %}">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <!-- Google fonts - Open Sans-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
@@ -33,10 +33,23 @@
       href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css"
     >
     <!-- Favicon-->
-    <link rel="shortcut icon" href="favicon.png">
+    <link rel="shortcut icon" href="{% static 'favicon.png' %}">
+          <!-- JavaScript files-->
+    <script src="{% static 'jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'popper.js/umd/popper.min.js' %}"> </script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'jquery.cookie/jquery.cookie.js' %}"> </script>
+    <script src="{% static '@fancyapps/fancybox/jquery.fancybox.min.js' %}"></script>
+        <!-- 引入layer.js -->
+    <script src="{% static 'layer/layer.js' %}"></script>
+    <script src="{% static 'js/front.js' %}"></script>
+    <script src="{% static 'ckeditor/ckeditor/plugins/prism/lib/prism/prism_patched.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'prism/prism.css' %}">
+
     <!-- Tweaks for older IEs--><!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
+
   </head>
   <body>
     <header class="header">
@@ -369,6 +382,7 @@
             {% endfor %}
           </div>
           <!-- Widget [Tags Cloud Widget]-->
+
           <div class="widget tags">       
             <header>
               <h3 class="h6">Tags</h3>
@@ -447,17 +461,7 @@
         </div>
       </div>
     </footer>
-    <!-- JavaScript files-->
-    <script src="{% static 'jquery/jquery.min.js' %}"></script>
-    <script src="{% static 'popper.js/umd/popper.min.js' %}"> </script>
-    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'jquery.cookie/jquery.cookie.js' %}"> </script>
-    <script src="{% static '@fancyapps/fancybox/jquery.fancybox.min.js' %}"></script>
-        <!-- 引入layer.js -->
-    <script src="{% static 'layer/layer.js' %}"></script>
-    <script src="{% static 'js/front.js' %}"></script>
-    <script src="{% static 'ckeditor/ckeditor/plugins/prism/lib/prism/prism_patched.min.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'prism/prism.css' %}">
+
     <script>
         // 删除文章的函数
         function confirm_delete() {

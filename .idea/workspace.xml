@@ -2,21 +2,22 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bb1a0e16-7e68-4cd9-bf4d-bb6a9f3a0abc" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/article/migrations/0004_auto_20210410_1702.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/media/article/20210410/1.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/media/article/20210410/1.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/media/article/20210410/featured-pic-1.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/media/avatar/20210410/avatar-3.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/L2D/L2Dwidget.0.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/L2D/L2Dwidget.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/L2D/live2d.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/L2D/model.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/L2D/model.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/favicon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/nprogress/nprogress.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/nprogress/nprogress.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PotatoMiniBlog/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/PotatoMiniBlog/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PotatoMiniBlog/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/PotatoMiniBlog/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/article/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/article/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/article/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/article/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/article/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/article/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/comment/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/comment/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/article/20210404/blog-2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/media/article/20210404/blog-2.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/article/20210410/1.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/media/article/20210410/1.jpeg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/blog.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/blog.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/create.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/create.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/edit.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/notice_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/notice_list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/post.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/post.html" afterDir="false" />
     </list>

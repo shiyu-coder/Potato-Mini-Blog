@@ -27,13 +27,35 @@
     <!-- Custom stylesheet - for your changes-->
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
     <!-- Favicon-->
-    <link rel="shortcut icon" href="favicon.png">
+    <link rel="shortcut icon" href="{% static 'favicon.png' %}">
     <!-- Tweaks for older IEs--><!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
+    <!--  nprogress  -->
+    <script src="{% static 'nprogress/nprogress.js' %}"></script>
+    <link rel='stylesheet' href="{% static 'nprogress/nprogress.css' %}"/>
   </head>
   <body>
+      <!-- JavaScript files-->
+    <script src="{% static 'jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'popper.js/umd/popper.min.js' %}"> </script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'jquery.cookie/jquery.cookie.js' %}"> </script>
+    <script src="{% static '@fancyapps/fancybox/jquery.fancybox.min.js' %}"></script>
+    <script src="{% static 'js/front.js' %}"></script>
+    <script src="{% static 'layer/layer.js' %}"></script>
+  <script>
+      $(document).ready(function(){
+      NProgress.start();
+      NProgress.done();
+      })
+  </script>
+
     <header class="header">
+       <a href="https://github.com/shiyu-coder/Potato-Mini-Blog">
+        <img style="position: absolute; top: 0; left: 0; border: 0;z-index:999999999" src="https://camo.githubusercontent.com/82b228a3648bf44fc1163ef44c62fcc60081495e/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png">
+        </a>
+
       <!-- Main Navbar-->
       <nav class="navbar navbar-expand-lg">
         <div class="search-area">
@@ -113,6 +135,7 @@
           </div>
         </div>
       </nav>
+
     </header>
     <!-- Hero Section-->
 <!--    <marquee direction="left" scrollamount="10" style="background-size: cover; background-position: center center" id="">-->
@@ -335,14 +358,7 @@
         </div>
       </div>
     </footer>
-    <!-- JavaScript files-->
-    <script src="{% static 'jquery/jquery.min.js' %}"></script>
-    <script src="{% static 'popper.js/umd/popper.min.js' %}"> </script>
-    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'jquery.cookie/jquery.cookie.js' %}"> </script>
-    <script src="{% static '@fancyapps/fancybox/jquery.fancybox.min.js' %}"></script>
-    <script src="{% static 'js/front.js' %}"></script>
-    <script src="{% static 'layer/layer.js' %}"></script>
+
     {% if user.is_authenticated %}
 <form 
     style="display:none;" 
@@ -353,7 +369,9 @@
 {% csrf_token %}
     <button type="submit">发送</button>
 </form>
+
     <script>
+
         function user_delete() {
             // 调用layer弹窗组件
             layer.open({
@@ -367,5 +385,235 @@
         }
     </script>
 {% endif %}
+
   </body>
+
+  <!-- 添加点击烟花效果 -->
+<!-- 添加点击爆炸效果 -->
+<canvas class="fireworks" style="position: fixed; left: 0px; top: 0px; z-index: 1; pointer-events: none; width: 1440px; height: 451px;" width="2880" height="902"></canvas>
+<script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script>
+<script type="text/javascript">
+"use strict";function updateCoords(e){pointerX=(e.clientX||e.touches[0].clientX)-canvasEl.getBoundingClientRect().left,pointerY=e.clientY||e.touches[0].clientY-canvasEl.getBoundingClientRect().top}function setParticuleDirection(e){var t=anime.random(0,360)*Math.PI/180,a=anime.random(50,180),n=[-1,1][anime.random(0,1)]*a;return{x:e.x+n*Math.cos(t),y:e.y+n*Math.sin(t)}}function createParticule(e,t){var a={};return a.x=e,a.y=t,a.color=colors[anime.random(0,colors.length-1)],a.radius=anime.random(16,32),a.endPos=setParticuleDirection(a),a.draw=function(){ctx.beginPath(),ctx.arc(a.x,a.y,a.radius,0,2*Math.PI,!0),ctx.fillStyle=a.color,ctx.fill()},a}function createCircle(e,t){var a={};return a.x=e,a.y=t,a.color="#F00",a.radius=0.1,a.alpha=0.5,a.lineWidth=6,a.draw=function(){ctx.globalAlpha=a.alpha,ctx.beginPath(),ctx.arc(a.x,a.y,a.radius,0,2*Math.PI,!0),ctx.lineWidth=a.lineWidth,ctx.strokeStyle=a.color,ctx.stroke(),ctx.globalAlpha=1},a}function renderParticule(e){for(var t=0;t<e.animatables.length;t++){e.animatables[t].target.draw()}}function animateParticules(e,t){for(var a=createCircle(e,t),n=[],i=0;i<numberOfParticules;i++){n.push(createParticule(e,t))}anime.timeline().add({targets:n,x:function(e){return e.endPos.x},y:function(e){return e.endPos.y},radius:0.1,duration:anime.random(1200,1800),easing:"easeOutExpo",update:renderParticule}).add({targets:a,radius:anime.random(80,160),lineWidth:0,alpha:{value:0,easing:"linear",duration:anime.random(600,800)},duration:anime.random(1200,1800),easing:"easeOutExpo",update:renderParticule,offset:0})}function debounce(e,t){var a;return function(){var n=this,i=arguments;clearTimeout(a),a=setTimeout(function(){e.apply(n,i)},t)}}var canvasEl=document.querySelector(".fireworks");if(canvasEl){var ctx=canvasEl.getContext("2d"),numberOfParticules=30,pointerX=0,pointerY=0,tap="mousedown",colors=["#FF1461","#18FF92","#5A87FF","#FBF38C"],setCanvasSize=debounce(function(){canvasEl.width=2*window.innerWidth,canvasEl.height=2*window.innerHeight,canvasEl.style.width=window.innerWidth+"px",canvasEl.style.height=window.innerHeight+"px",canvasEl.getContext("2d").scale(2,2)},500),render=anime({duration:1/0,update:function(){ctx.clearRect(0,0,canvasEl.width,canvasEl.height)}});document.addEventListener(tap,function(e){"sidebar"!==e.target.id&&"toggle-sidebar"!==e.target.id&&"A"!==e.target.nodeName&&"IMG"!==e.target.nodeName&&(render.play(),updateCoords(e),animateParticules(pointerX,pointerY))},!1),setCanvasSize(),window.addEventListener("resize",setCanvasSize,!1)}"use strict";function updateCoords(e){pointerX=(e.clientX||e.touches[0].clientX)-canvasEl.getBoundingClientRect().left,pointerY=e.clientY||e.touches[0].clientY-canvasEl.getBoundingClientRect().top}function setParticuleDirection(e){var t=anime.random(0,360)*Math.PI/180,a=anime.random(50,180),n=[-1,1][anime.random(0,1)]*a;return{x:e.x+n*Math.cos(t),y:e.y+n*Math.sin(t)}}function createParticule(e,t){var a={};return a.x=e,a.y=t,a.color=colors[anime.random(0,colors.length-1)],a.radius=anime.random(16,32),a.endPos=setParticuleDirection(a),a.draw=function(){ctx.beginPath(),ctx.arc(a.x,a.y,a.radius,0,2*Math.PI,!0),ctx.fillStyle=a.color,ctx.fill()},a}function createCircle(e,t){var a={};return a.x=e,a.y=t,a.color="#F00",a.radius=0.1,a.alpha=0.5,a.lineWidth=6,a.draw=function(){ctx.globalAlpha=a.alpha,ctx.beginPath(),ctx.arc(a.x,a.y,a.radius,0,2*Math.PI,!0),ctx.lineWidth=a.lineWidth,ctx.strokeStyle=a.color,ctx.stroke(),ctx.globalAlpha=1},a}function renderParticule(e){for(var t=0;t<e.animatables.length;t++){e.animatables[t].target.draw()}}function animateParticules(e,t){for(var a=createCircle(e,t),n=[],i=0;i<numberOfParticules;i++){n.push(createParticule(e,t))}anime.timeline().add({targets:n,x:function(e){return e.endPos.x},y:function(e){return e.endPos.y},radius:0.1,duration:anime.random(1200,1800),easing:"easeOutExpo",update:renderParticule}).add({targets:a,radius:anime.random(80,160),lineWidth:0,alpha:{value:0,easing:"linear",duration:anime.random(600,800)},duration:anime.random(1200,1800),easing:"easeOutExpo",update:renderParticule,offset:0})}function debounce(e,t){var a;return function(){var n=this,i=arguments;clearTimeout(a),a=setTimeout(function(){e.apply(n,i)},t)}}var canvasEl=document.querySelector(".fireworks");if(canvasEl){var ctx=canvasEl.getContext("2d"),numberOfParticules=30,pointerX=0,pointerY=0,tap="mousedown",colors=["#FF1461","#18FF92","#5A87FF","#FBF38C"],setCanvasSize=debounce(function(){canvasEl.width=2*window.innerWidth,canvasEl.height=2*window.innerHeight,canvasEl.style.width=window.innerWidth+"px",canvasEl.style.height=window.innerHeight+"px",canvasEl.getContext("2d").scale(2,2)},500),render=anime({duration:1/0,update:function(){ctx.clearRect(0,0,canvasEl.width,canvasEl.height)}});document.addEventListener(tap,function(e){"sidebar"!==e.target.id&&"toggle-sidebar"!==e.target.id&&"A"!==e.target.nodeName&&"IMG"!==e.target.nodeName&&(render.play(),updateCoords(e),animateParticules(pointerX,pointerY))},!1),setCanvasSize(),window.addEventListener("resize",setCanvasSize,!1)};
+</script>
+
+<script type="text/javascript">
+ (function($){
+     $.fn.snow = function(options){
+     var $flake = $('<div id="snowbox" />').css({'position': 'absolute','z-index':'9999', 'top': '-50px', 'cursor': 'pointer'}).html('❄'),
+     documentHeight  = $(document).height(),
+     documentWidth   = $(document).width(),
+     defaults = {
+         minSize     : 10,
+         maxSize     : 20,
+         newOn       : 1000,
+         flakeColor  : "#FFFFFF" /* 此处可以定义雪花颜色，若要白色可以改为#FFFFFF */
+     },
+     options = $.extend({}, defaults, options);
+     var interval= setInterval( function(){
+     var startPositionLeft = Math.random() * documentWidth - 100,
+     startOpacity = 0.5 + Math.random(),
+     sizeFlake = options.minSize + Math.random() * options.maxSize,
+     endPositionTop = documentHeight - 200,
+     endPositionLeft = startPositionLeft - 500 + Math.random() * 500,
+     durationFall = documentHeight * 10 + Math.random() * 5000;
+     $flake.clone().appendTo('body').css({
+         left: startPositionLeft,
+         opacity: startOpacity,
+         'font-size': sizeFlake,
+         color: options.flakeColor
+     }).animate({
+         top: endPositionTop,
+         left: endPositionLeft,
+         opacity: 0.2
+     },durationFall,'linear',function(){
+         $(this).remove()
+     });
+     }, options.newOn);
+     };
+ })(jQuery);
+ $(function(){
+     $.fn.snow({
+         minSize: 5, /* 定义雪花最小尺寸 */
+         maxSize: 80,/* 定义雪花最大尺寸 */
+         newOn: 200  /* 定义密集程度，数字越小越密集 */
+     });
+ });
+
+<!--  <script type="text/javascript">-->
+<!--$(document).ready(function(){-->
+<!--    var a_index = 0;-->
+<!--    $("body").click(function(e){-->
+<!--        let r = Math.random()*255;-->
+<!--        let g = Math.random()*255;-->
+<!--        let b = Math.random()*255;-->
+<!--        var color = "rgb("+r+","+g+","+b+")";-->
+<!--        var a = new Array("global", "yield", "python", "HTML", "css", "javascript", "lambda" ,"import", "print", "class", "def", "except","assert", "exec", "pass", "False", "True", "socket", "struct" ,"random", "PEP8", "threading", "multiprocessing");-->
+<!--        var $i = $("<span/>").text(a[a_index]);-->
+<!--        a_index = (a_index + 1) % a.length;-->
+<!--        var x = e.pageX,y = e.pageY;-->
+<!--        var size =  Math.random() * 10 + 8 + "px";-->
+<!--        $i.css({-->
+<!--            "z-index": 99999,-->
+<!--            "top": y - 20,-->
+<!--            "left": x,-->
+<!--            "position": "absolute",-->
+<!--            "font-weight": "400",-->
+<!--             "font-size": size,-->
+<!--            "color": color-->
+<!--        });-->
+<!--        $("body").append($i);-->
+<!--        $i.animate({"top": y-200,"opacity": 0},1500,function() {-->
+<!--            $i.remove();-->
+<!--        });-->
+<!--    });-->
+<!--});-->
+<!--</script>-->
+ <script src="https://eqcn.ajz.miesnfu.com/wp-content/plugins/wp-3d-pony/live2dw/lib/L2Dwidget.min.js"></script>
+<script>
+    L2Dwidget.init({
+        "model": {
+　　　　　　　jsonPath: "https://unpkg.com/live2d-widget-model-haru@1.0.5/01/assets/haru01.model.json",
+            "scale": 1
+        },
+        "display": {
+            "position": "right", //看板娘的表现位置
+            "width": 150,  //小萝莉的宽度
+            "height": 400, //小萝莉的高度
+            "hOffset": 0,
+            "vOffset": -20
+        },
+        "mobile": {
+            "show": true,
+            "scale": 0.5
+        },
+        "react": {
+            "opacityDefault": 0.7,
+            "opacityOnHover": 0.2
+        }
+    });
+</script>
+<!--<script type="text/javascript">-->
+<!--var a_idx = 0;-->
+<!--jQuery(document).ready(function($) {-->
+<!--    $("body").click(function(e) {-->
+<!--        var a = new Array("❤","❤","❤","❤","❤","❤","❤","❤","❤","❤","❤","❤");-->
+<!--        var $i = $("<span></span>").text(a[a_idx]);-->
+<!--        a_idx = (a_idx + 1) % a.length;-->
+<!--        var x = e.pageX,-->
+<!--        y = e.pageY;-->
+<!--        $i.css({-->
+<!--            "z-index": 999999999999999999999999999999999999999999999999999999999999999999999,-->
+<!--            "top": y - 20,-->
+<!--            "left": x,-->
+<!--            "position": "absolute",-->
+<!--            "font-weight": "bold",-->
+<!--            "color": "rgb("+~~(255*Math.random())+","+~~(255*Math.random())+","+~~(255*Math.random())+")"-->
+<!--        });-->
+<!--        $("body").append($i);-->
+<!--        $i.animate({-->
+<!--            "top": y - 180,-->
+<!--            "opacity": 0-->
+<!--        },-->
+<!--        1500,-->
+<!--        function() {-->
+<!--            $i.remove();-->
+<!--        });-->
+<!--    });-->
+<!--});-->
+<!--</script>-->
+<script>
+  !function(){
+
+ function n(n,e,t){
+
+ return n.getAttribute(e)||t
+
+ }
+
+ function e(n){
+
+ return document.getElementsByTagName(n)
+
+ }
+
+ function t(){
+
+ var t=e("script"),o=t.length,i=t[o-1];
+
+ return{
+
+ l:o,z:n(i,"zIndex",-1),o:n(i,"opacity",.5),c:n(i,"color","0,0,0"),n:n(i,"count",99)
+
+ }
+
+ }
+
+ function o(){
+
+ a=m.width=window.innerWidth||document.documentElement.clientWidth||document.body.clientWidth,
+
+ c=m.height=window.innerHeight||document.documentElement.clientHeight||document.body.clientHeight
+
+ }
+
+ function i(){
+
+ r.clearRect(0,0,a,c);
+
+ var n,e,t,o,m,l;
+
+ s.forEach(function(i,x){
+
+ for(i.x+=i.xa,i.y+=i.ya,i.xa*=i.x>a||i.x<0?-1:1,i.ya*=i.y>c||i.y<0?-1:1,r.fillRect(i.x-.5,i.y-.5,1,1),e=x+1;e<u.length;e++)n=u[e],
+
+ null!==n.x&&null!==n.y&&(o=i.x-n.x,m=i.y-n.y,
+
+ l=o*o+m*m,l<n.max&&(n===y&&l>=n.max/2&&(i.x-=.03*o,i.y-=.03*m),
+ t=(n.max-l)/n.max,r.beginPath(),r.lineWidth=t/2,r.strokeStyle="rgba("+d.c+","+(t+.2)+")",r.moveTo(i.x,i.y),r.lineTo(n.x,n.y),r.stroke()))
+
+ }),
+
+ x(i)
+
+ }
+
+ var a,c,u,m=document.createElement("canvas"),
+
+ d=t(),l="c_n"+d.l,r=m.getContext("2d"),
+x=window.requestAnimationFrame||window.webkitRequestAnimationFrame||window.mozRequestAnimationFrame||window.oRequestAnimationFrame||window.msRequestAnimationFrame||
+
+ function(n){
+
+ window.setTimeout(n,1e3/45)
+ },
+
+ w=Math.random,y={x:null,y:null,max:2e4};m.id=l,m.style.cssText="position:fixed;top:0;left:0;z-index:"+d.z+";opacity:"+d.o,e("body")[0].appendChild(m),o(),window.onresize=o,
+
+ window.onmousemove=function(n){
+
+ n=n||window.event,y.x=n.clientX,y.y=n.clientY
+
+ },
+
+ window.onmouseout=function(){
+
+ y.x=null,y.y=null
+
+ };
+
+ for(var s=[],f=0;d.n>f;f++){
+
+ var h=w()*a,g=w()*c,v=2*w()-1,p=2*w()-1;s.push({x:h,y:g,xa:v,ya:p,max:6e3})
+
+ }
+
+ u=s.concat([y]),
+
+ setTimeout(function(){i()},100)
+
+ }();
+
+ </script>
+
+
 </html>

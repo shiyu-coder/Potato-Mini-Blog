@@ -27,7 +27,7 @@
     <!-- Custom stylesheet - for your changes-->
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
     <!-- Favicon-->
-    <link rel="shortcut icon" href="favicon.png">
+    <link rel="shortcut icon" href="{% static 'favicon.png' %}">
     <!-- Tweaks for older IEs--><!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
@@ -126,7 +126,7 @@
                 <!-- Django中需要POST数据的地方都必须有csrf_token -->
 <!--                {% csrf_token %}-->
                 <!-- 文章标题 -->
-                <div class="form-group">
+<!--                <div class="form-group">-->
 <!--                &lt;!&ndash; 文章标题图 &ndash;&gt;-->
 <!--    <div class="form-group">-->
 <!--        <label for="avatar">Cover</label>-->
@@ -136,7 +136,7 @@
 <!--                    <label for="title">文章标题</label>-->
 <!--                    &lt;!&ndash; 文本框 &ndash;&gt;-->
 <!--                    <input type="text" class="form-control article_post" id="title" name="title">-->
-                </div>
+<!--                </div>-->
 
 <!--                &lt;!&ndash; 文章标签 &ndash;&gt;-->
 <!--                <div class="form-group">-->
