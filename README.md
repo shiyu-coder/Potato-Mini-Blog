@@ -105,47 +105,47 @@ CPU：1核；内存：2GB；系统盘：40GB
 
 ### 主页
 
-![127.0.0.1_8000_ (1)](C:\Users\86137\Desktop\127.0.0.1_8000_ (1).png)
+![1](\image\1.png)
 
 ### 文章列表页
 
-![127.0.0.1_8000_article_article-list_](D:\software_engineering\博客文章素材\127.0.0.1_8000_article_article-list_.png)
+![2](\image\2.png)
 
 ### 文章详情
 
-![127.0.0.1_8000_article_article-detail_12_](D:\software_engineering\博客文章素材\127.0.0.1_8000_article_article-detail_12_.png)
+![3](D:\software_engineering\Potato Mini Blog\image\3.png)
 
 ### 用户下拉框
 
-<img src="C:\Users\86137\AppData\Roaming\Typora\typora-user-images\image-20210412210544186.png" alt="image-20210412210544186" style="zoom:80%;" />
+<img src="\image\4.png" alt="4" style="zoom:80%;" />
 
 ### 编辑文章界面
 
-<img src="C:\Users\86137\AppData\Roaming\Typora\typora-user-images\image-20210412210709319.png" alt="image-20210412210709319" style="zoom:80%;" />
+<img src="\image\5.png" alt="5" style="zoom:80%;" />
 
 ### 搜索界面
 
-<img src="C:\Users\86137\AppData\Roaming\Typora\typora-user-images\image-20210412210749030.png" alt="image-20210412210749030" style="zoom:80%;" />
+<img src="\image\6.png" alt="6" style="zoom:80%;" />
 
 ### 登录界面
 
-![image-20210412210927389](C:\Users\86137\AppData\Roaming\Typora\typora-user-images\image-20210412210927389.png)
+<img src="\image\7.png" alt="7" style="zoom:80%;" />
 
 ### 后台管理界面
 
-![image-20210412211014644](C:\Users\86137\AppData\Roaming\Typora\typora-user-images\image-20210412211014644.png)
+<img src="\image\8.png" alt="8" style="zoom:80%;" />
 
 ### 响应式界面
 
 完整显示时：
 
-<img src="C:\Users\86137\AppData\Roaming\Typora\typora-user-images\image-20210412211220964.png" alt="image-20210412211220964" style="zoom:80%;" />
+<img src="\image\9.png" alt="9" style="zoom:80%;" />
 
 移动端显示时：
 
-<img src="C:\Users\86137\AppData\Roaming\Typora\typora-user-images\image-20210412211154242.png" alt="image-20210412211154242" style="zoom:80%;" />
+<img src="\image\10.png" alt="10" style="zoom:80%;" />
 
 展开列表：
 
-<img src="C:\Users\86137\AppData\Roaming\Typora\typora-user-images\image-20210412211206410.png" alt="image-20210412211206410" style="zoom:80%;" />
+<img src="\image\11.png" alt="11" style="zoom:80%;" />
 
